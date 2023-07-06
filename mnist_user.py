@@ -26,11 +26,11 @@ st.divider()
 
 # Load from GitHub
 # Note that the file URL needs to be for the `raw` file
-url = "https://github.com/Purinat33/streamlit_stock_price/raw/master/my_mnist.h5"
+url = "https://github.com/Purinat33/Streamlit-MNIST/raw/master/my_mnist.h5"
 file_path = keras.utils.get_file("my_mnist.h5", origin=url)
 model = keras.models.load_model(file_path)
 # Load image
-img_url = "https://github.com/Purinat33/streamlit_stock_price/raw/master/mnist_overview_95.png"
+img_url = "https://github.com/Purinat33/Streamlit-MNIST/raw/master/mnist_overview_95.png"
 st.header("Model Architectural Overview")
 urllib.request.urlretrieve(img_url, "mnist_overview_95.png")
 img = Image.open("mnist_overview_95.png")
