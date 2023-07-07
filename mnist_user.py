@@ -9,7 +9,13 @@ from keras.datasets import mnist
 import random
 from keras.utils import to_categorical
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
-import time # For measuring execution time
+import time  # For measuring execution time
+
+# TODO: Custom user's image input (file upload is the goal for now)
+# 7th July 2023
+from keras.utils import load_img, img_to_array
+
+# In the future we might do CNN entirely and not have to convert images like this
 
 # import os
 # st.write('DEV')
@@ -24,6 +30,7 @@ st.divider()
 # Load locally
 # filepath = os.path.abspath("./Desktop/youtube/streamlit/my_mnist.h5")
 # model = keras.models.load_model(filepath)
+
 
 # Moved to functions to save space
 # https://docs.streamlit.io/library/advanced-features/caching#basic-usage
@@ -93,7 +100,6 @@ def catalogueY(Y):
 # We can use cache_data
 @st.cache_data
 def evaluate_model(_model, X_test_re, Y_test_re):
-
     loss = _model.evaluate(X_test_re, Y_test_re)[0]
     accuracy = round(_model.evaluate(X_test_re, Y_test_re)[1] * 100, 3)
 
@@ -101,16 +107,17 @@ def evaluate_model(_model, X_test_re, Y_test_re):
 
 
 def main():
-
     # Load from GitHub
     # Note that the file URL needs to be for the `raw` file
     url = "https://github.com/Purinat33/Streamlit-MNIST/raw/master/my_mnist.h5"
-    model = load_model(url, 'my_mnist.h5')
+    model = load_model(url, "my_mnist.h5")
 
     # Load image
-    img_url = "https://github.com/Purinat33/Streamlit-MNIST/raw/master/mnist_overview_95.png"
+    img_url = (
+        "https://github.com/Purinat33/Streamlit-MNIST/raw/master/mnist_overview_95.png"
+    )
     st.header("Model Architectural Overview")
-    img = load_img(img_url, 'mnist_overview_95.png')
+    img = load_img(img_url, "mnist_overview_95.png")
     st.image(img)
 
     # Dataset
@@ -178,6 +185,16 @@ def main():
     st.pyplot(fig_res)
 
     st.divider()
+    st.header("Upload your own image!")
+
+    # A part for the user to upload their own handwriting image
+    img_upload = st.file_uploader(
+        "Upload your own handwriting image", type=["jpg", "png"]
+    )
+    if img_upload is not None:
+        user_image = Image.open(img_upload)
+        st.image(user_image)
+
     st.header("Model Performance Overview")
     # st.subheader(f"Loss: {model.evaluate(X_test_re, Y_test_re)[0]}")
     # st.subheader(f"Accuracy: {model.evaluate(X_test_re, Y_test_re)[1]}")
@@ -187,14 +204,13 @@ def main():
     y_pred = model.predict(X_test_re)
     y_pred = y_pred.argmax(axis=1)
 
-
     cm_fig = get_confusion_matrix(y_true, y_pred)
     st.pyplot(cm_fig)
 
     st.divider()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     start_time = time.time()
     main()
     end_time = time.time()
